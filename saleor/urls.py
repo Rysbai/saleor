@@ -23,6 +23,7 @@ urlpatterns = [
         handle_plugin_webhook,
         name="plugins",
     ),
+    url(r'^', include('django_telegrambot.urls'))
 ]
 
 if settings.DEBUG:

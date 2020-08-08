@@ -35,6 +35,7 @@ django-prices-vatlayer==1.1.0
 django-redis==4.12.1
 django-render-block==0.7
 django-storages==1.9.1
+django-telegrambot==1.0.1
 django-templated-email==2.3.0
 django-versatileimagefield==2.0
 docutils==0.15.2
@@ -91,6 +92,7 @@ pycparser==2.20
 pyjwt==1.7.1
 pyphen==0.9.5
 python-dateutil==2.8.1
+python-dotenv-0.14.0
 python-json-logger==0.1.11
 python-magic==0.4.18
 python-magic-bin==0.4.14; sys_platform == "win32"

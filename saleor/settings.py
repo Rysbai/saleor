@@ -16,6 +16,9 @@ from django_prices.utils.formatting import get_currency_fraction
 from pytimeparse import parse
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def get_list(text):
@@ -250,6 +253,7 @@ INSTALLED_APPS = [
     "saleor.webhook",
     "saleor.wishlist",
     "saleor.app",
+    "saleor.telegram_notify",
     # External apps
     "versatileimagefield",
     "django_measurement",
@@ -261,6 +265,7 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     "phonenumber_field",
+    "django_telegrambot"
 ]
 
 
@@ -516,6 +521,7 @@ PLUGINS = [
     "saleor.payment.gateways.braintree.plugin.BraintreeGatewayPlugin",
     "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
+    "saleor.plugins.telegram_notify.plugin.TelegramOrderNotifyPlugin"
 ]
 
 # Plugin discovery
@@ -579,3 +585,15 @@ JWT_TTL_REFRESH = timedelta(seconds=parse(os.environ.get("JWT_TTL_REFRESH", "30 
 JWT_TTL_REQUEST_EMAIL_CHANGE = timedelta(
     seconds=parse(os.environ.get("JWT_TTL_REQUEST_EMAIL_CHANGE", "1 hour")),
 )
+
+
+# Django Telegram bot
+
+DJANGO_TELEGRAMBOT = {
+    "MODE": "POLLING",
+    'BOTS': [
+        {
+            'TOKEN': os.getenv('TELEGRAM_BOT_TOKEN', 'TOKEN')
+        }
+    ]
+}
