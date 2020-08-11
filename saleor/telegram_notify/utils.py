@@ -1,48 +1,33 @@
-from typing import Callable
+from typing import List
 
-import telegram
-from django.utils import timezone
-
-from saleor.telegram_notify.models import ChatStates, Chat
+from saleor.plugins.models import PluginConfiguration
+from saleor.telegram_notify import plugin
 
 
-def state_validator(allow_state: str) -> Callable[[Callable], Callable]:
-    def decorator(
-            func: Callable[[telegram.Bot, telegram.Update, Chat], None])\
-            -> Callable[[telegram.Bot, telegram.Update], None]:
-        def wrapper(bot: telegram.Bot, update: telegram.Update) -> None:
-            chat, _created = Chat.objects.get_or_create(chat_id=update.message.chat_id)
+def get_allowed_usernames() -> List:
+    return get_telegram_plugin_conf_item_value(
+        item_name='admin_telegram_usernames').split(',')
 
-            if allow_state == ChatStates.undefined:
-                bot.send_message(chat_id=chat.chat_id, text='Бот запущен!')
-                if chat.state != ChatStates.undefined:
-                    return
 
-            if allow_state == ChatStates.waiting_for_email:
-                if chat.state != allow_state:
-                    bot.send_message(
-                        chat_id=chat.chat_id,
-                        text='Простите, я не умею понимать или расказать шутку!')
-                    return
+def get_telegram_plugin_conf_item_value(item_name: str):
+    plugin_conf = get_telegram_plugin_conf()
 
-            if allow_state == ChatStates.user_is_not_confirmed:
-                if chat.state != allow_state or not chat.user_id:
-                    bot.send_message('Привет)!')
-                    return
+    username_conf_field = list(filter(
+        lambda x : x['name'] == item_name,
+        plugin_conf))
 
-                now = timezone.now()
-                if not chat.last_code_send_time or \
-                        now.date() != chat.last_code_send_time.date():
-                    bot.send_message(chat_id=chat.chat_id, text='Код уже устарел!')
-                    return
+    if not username_conf_field:
+        raise TypeError(
+            f"Item \"{item_name}\" not found in "
+            f"{plugin.TelegramOrderNotifyPlugin.__name__} configuration")
 
-            if allow_state == ChatStates.authorized_admin:
-                if chat.state != allow_state:
-                    bot.send_message('Привет)!')
-                    return
+    return username_conf_field[0]['value']
 
-            func(bot, update, chat)
 
-        return wrapper
-
-    return decorator
+def get_telegram_plugin_conf() -> list:
+    try:
+        return PluginConfiguration.objects.get(
+            identifier=plugin.TelegramOrderNotifyPlugin.PLUGIN_ID
+        ).configuration
+    except PluginConfiguration.DoesNotExist:
+        return plugin.TelegramOrderNotifyPlugin.DEFAULT_CONFIGURATION

@@ -512,6 +512,7 @@ GRAPHENE = {
 PLUGINS_MANAGER = "saleor.plugins.manager.PluginsManager"
 
 PLUGINS = [
+    "saleor.telegram_notify.plugin.TelegramOrderNotifyPlugin",
     "saleor.plugins.avatax.plugin.AvataxPlugin",
     "saleor.plugins.vatlayer.plugin.VatlayerPlugin",
     "saleor.plugins.webhook.plugin.WebhookPlugin",
@@ -521,7 +522,6 @@ PLUGINS = [
     "saleor.payment.gateways.braintree.plugin.BraintreeGatewayPlugin",
     "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
-    "saleor.plugins.telegram_notify.plugin.TelegramOrderNotifyPlugin"
 ]
 
 # Plugin discovery
