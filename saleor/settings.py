@@ -590,7 +590,8 @@ JWT_TTL_REQUEST_EMAIL_CHANGE = timedelta(
 # Django Telegram bot
 
 DJANGO_TELEGRAMBOT = {
-    "MODE": "POLLING",
+    "MODE": os.getenv('TELEGRAM_BOT_MODE', 'POLLING'),
+    "WEBHOOK_SITE": os.getenv('TELEGRAM_BOT_WEBHOOK_SITE', ''),
     'BOTS': [
         {
             'TOKEN': os.getenv('TELEGRAM_BOT_TOKEN', 'TOKEN')

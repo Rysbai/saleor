@@ -57,25 +57,25 @@ class TelegramOrderNotifyPlugin(BasePlugin):
     }
 
     def order_created(self, order: "Order", previous_value: Any):
-        self.notify_if_allowed(self.ConfNames.notify_order_created,
-                               telegram_order_create_notify,
+        self.notify_if_allowed(notify_type=self.ConfNames.notify_order_created,
+                               task=telegram_order_create_notify,
                                order_id=order.id)
 
     def order_cancelled(self, order: "Order", previous_value: Any) -> Any:
-        self.notify_if_allowed(self.ConfNames.notify_order_canceled,
-                               telegram_order_canceled_notify,
+        self.notify_if_allowed(notify_type=self.ConfNames.notify_order_canceled,
+                               task=telegram_order_canceled_notify,
                                order_id=order.id)
 
     def order_fulfilled(self, order: "Order", previous_value: Any) -> Any:
-        self.notify_if_allowed(self.ConfNames.notify_order_fulfilled,
-                               telegram_order_fulfilled_notify,
+        self.notify_if_allowed(notify_type=self.ConfNames.notify_order_fulfilled,
+                               task=telegram_order_fulfilled_notify,
                                order_id=order.id)
 
     def order_fully_paid(self, order: "Order", previous_value: Any) -> Any:
-        self.notify_if_allowed(self.ConfNames.notify_order_fully_paid,
-                               telegram_order_fully_paid_notify,
+        self.notify_if_allowed(notify_type=self.ConfNames.notify_order_fully_paid,
+                               task=telegram_order_fully_paid_notify,
                                order_id=order.id)
 
-    def notify_if_allowed(self, notify_type: str, func, **kwargs):
+    def notify_if_allowed(self, notify_type: str, task, **kwargs):
         if get_telegram_plugin_conf_item_value(notify_type):
-            func.delay(**kwargs)
+            task.delay(**kwargs)
