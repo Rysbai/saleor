@@ -45,5 +45,5 @@ def main():
     logger.info("Loading handlers for telegram bot")
     dp = DjangoTelegramBot.dispatcher
 
-    dp.add_handler(CommandHandler("start1", start))
+    dp.add_handler(CommandHandler("start", start))
     dp.add_handler(CommandHandler("help", start))

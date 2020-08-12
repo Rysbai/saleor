@@ -25,7 +25,7 @@ class TelegramOrderNotifyPlugin(BasePlugin):
                          "о новых, измененных, отмененных и выполненный заказов."
     DEFAULT_ACTIVE = True
     DEFAULT_CONFIGURATION = [
-        {"name": ConfNames.admin_telegram_usernames, "value": None},
+        {"name": ConfNames.admin_telegram_usernames, "value": ''},
         {"name": ConfNames.notify_order_created, "value": True},
         {"name": ConfNames.notify_order_fulfilled, "value": True},
         {"name": ConfNames.notify_order_canceled, "value": True},
