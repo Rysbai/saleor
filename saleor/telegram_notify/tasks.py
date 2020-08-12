@@ -5,7 +5,7 @@ from django_telegrambot.apps import DjangoTelegramBot
 from saleor.celeryconf import app
 from saleor.order.models import Order, OrderLine
 from saleor.telegram_notify.models import Chat
-from saleor.telegram_notify.utils import get_allowed_usernames
+from saleor.telegram_notify import plugin
 
 
 @app.task
@@ -67,9 +67,9 @@ def get_product_info(line: "OrderLine") -> str:
 
 def bot_notify_chats(text: str, parse_mode=None, **kwargs) -> None:
     bot = DjangoTelegramBot.getBot()
-    print(get_allowed_usernames())
 
-    for chat in Chat.objects.filter(username__in=get_allowed_usernames()):
+    for chat in Chat.objects.filter(
+            username__in=plugin.TelegramOrderNotifyPlugin.get_allowed_usernames()):
         bot.send_message(chat_id=chat.chat_id,
                          text=text,
                          parse_mode=parse_mode,

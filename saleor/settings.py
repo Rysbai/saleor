@@ -253,7 +253,6 @@ INSTALLED_APPS = [
     "saleor.webhook",
     "saleor.wishlist",
     "saleor.app",
-    "saleor.telegram_notify",
     # External apps
     "versatileimagefield",
     "django_measurement",
@@ -265,7 +264,8 @@ INSTALLED_APPS = [
     "django_countries",
     "django_filters",
     "phonenumber_field",
-    "django_telegrambot"
+    "django_telegrambot",
+    "saleor.telegram_notify",
 ]
 
 

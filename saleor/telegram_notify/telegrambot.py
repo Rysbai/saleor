@@ -1,17 +1,19 @@
 import logging
+from typing import List
 
 import telegram
 from telegram.ext import CommandHandler
 from django_telegrambot.apps import DjangoTelegramBot
 
+from saleor.telegram_notify.plugin import TelegramOrderNotifyPlugin
+
 from saleor.telegram_notify.models import Chat
-from saleor.telegram_notify.utils import get_allowed_usernames
 
 logger = logging.getLogger(__name__)
 
 
 def start(bot: telegram.Bot, update: telegram.Update):
-    allowed_usernames = get_allowed_usernames()
+    allowed_usernames = TelegramOrderNotifyPlugin.get_allowed_usernames()
     telegram_user = update.effective_user
 
     if telegram_user.username not in allowed_usernames:
@@ -39,7 +41,9 @@ def start(bot: telegram.Bot, update: telegram.Update):
                  f'Вы уже зарегистрированы для уведомлений о заказов магазина.')
 
 
-logger.info("Loading handlers for telegram bot")
-dp = DjangoTelegramBot.dispatcher
+def main():
+    logger.info("Loading handlers for telegram bot")
+    dp = DjangoTelegramBot.dispatcher
 
-dp.add_handler(CommandHandler("start", start))
+    dp.add_handler(CommandHandler("start1", start))
+    dp.add_handler(CommandHandler("help", start))

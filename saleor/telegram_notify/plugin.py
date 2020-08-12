@@ -5,7 +5,7 @@ from .tasks import (
     telegram_order_create_notify, telegram_order_canceled_notify,
     telegram_order_fulfilled_notify, telegram_order_fully_paid_notify
 )
-from .utils import get_telegram_plugin_conf_item_value
+from ..plugins.models import PluginConfiguration
 
 if TYPE_CHECKING:
     from saleor.order.models import Order
@@ -77,5 +77,34 @@ class TelegramOrderNotifyPlugin(BasePlugin):
                                order_id=order.id)
 
     def notify_if_allowed(self, notify_type: str, task, **kwargs):
-        if get_telegram_plugin_conf_item_value(notify_type):
+        if self.get_conf_item_value(notify_type):
             task.delay(**kwargs)
+
+    @classmethod
+    def get_allowed_usernames(cls):
+        return cls.get_conf_item_value(
+            item_name='admin_telegram_usernames').split(',')
+
+    @classmethod
+    def get_conf_item_value(cls, item_name: str):
+        plugin_conf = cls.get_plugin_conf()
+
+        username_conf_field = list(filter(
+            lambda x: x['name'] == item_name,
+            plugin_conf))
+
+        if not username_conf_field:
+            raise TypeError(
+                f"Item \"{item_name}\" not found in "
+                f"{cls.__name__} configuration")
+
+        return username_conf_field[0]['value']
+
+    @classmethod
+    def get_plugin_conf(cls) -> list:
+        try:
+            return PluginConfiguration.objects.get(
+                identifier=cls.PLUGIN_ID
+            ).configuration
+        except PluginConfiguration.DoesNotExist:
+            return cls.DEFAULT_CONFIGURATION
